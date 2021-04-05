@@ -9,15 +9,18 @@ const   express               =  require('express'),
 
 const   auth = require("./routes/authRoutes")
         user = require("./routes/userRoutes");
+        news = require("./routes/newsRoutes");
 
 require('dotenv').config();
 
-mongoose.set('useNewUrlParser', true);
-mongoose.set('useFindAndModify', false);
+//Mongo configuration
 mongoose.set('useCreateIndex', true);
+mongoose.connect(
+    process.env.DB_HOST_MONGO,
+    {useNewUrlParser: true, useUnifiedTopology: true}
+);
 
-mongoose.connect(process.env.DB_HOST_MONGO);
-
+//Express configuration
 app.use(require("express-session")({
     secret:process.env.APP_KEY,
     resave: false,          
@@ -35,15 +38,15 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use('/static',express.static('public'))
 
+
 //Regestering app routes 
 app.use('/', auth);
 app.use('/', user);
+app.use('/', news);
 
 //Listen On Server
-app.listen(process.env.PORT ||3000,function (err) {
-    if(err){
-        console.log(err);
-    }else {
+app.listen(process.env.APP_PORT,function (err) {
+    if(!err){
         console.log("Server Started At Port 3000");
     }
 });

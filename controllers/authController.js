@@ -1,10 +1,10 @@
-const passport              =   require("passport");
-const {isLoggedIn,goHomeIfLoggedIn}          =   require('../middleware/authMiddleware');
+const passport                              =   require("passport");
+const {isLoggedIn,goHomeIfLoggedIn}         =   require('../middleware/authMiddleware');
 
 exports.Home=[
     isLoggedIn,
     (req,res) =>{
-        return res.render("home");
+        return res.redirect("/news");
     }
 ]
 
