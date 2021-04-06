@@ -2,8 +2,9 @@
 <!-- Page Heading -->
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
   <h1 class="h3 mb-0 text-gray-800">News</h1>
-  <a href="<%= url %>/news/create" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-          class="fas fa-newspaper fa-sm text-white-50"></i> Create</a>
+    <% if (user.roles.includes("Editor")) { %>
+        <a href="<%= url %>/news/create" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i class="fas fa-newspaper fa-sm text-white-50"></i> Create</a>
+    <% } %> 
 </div>
 
 <!-- DataTales Example -->
@@ -19,7 +20,7 @@
                         <th>Image</th>
                         <th>Title</th>
                         <th>Created By</th>
-                        <th>Date</th>
+                        <th>Date Created</th>
                         <th>Options</th>
                     </tr>
                 </thead>
@@ -28,38 +29,45 @@
                         <th>Image</th>
                         <th>Title</th>
                         <th>Created By</th>
-                        <th>Date</th>
+                        <th>Date Created</th>
                         <th>Options</th>
                     </tr>
                 </tfoot>
                 <tbody>
 
-                    
-
                     <% news.forEach(function(item){ %>
                         <tr>
-                            <td><%= item.urlimg %></td>
+                            <td>
+                                <img width="100" src="<%= item.urlimg %>" alt="Image" />
+                            </td>
                             <td><%= item.title %></td>
                             <td><%= item.user.name %></td>
                             <td><%= moment(new Date(item.createdAt)).format('MMMM Do YYYY, h:mm:ss'); %></td>
                             <td>
-                                <a href="<%= url %>/news/create/<%= item._id %>" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                                    class="fas fa-angle-right text-white-50 p-2"></i></a>
+                                <a href="<%= url %>/news/<%= item._id %>" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm m-1">
+                                    <i class="fas fa-angle-right text-white-50 p-1"></i>
+                                </a>
                                 
-                                <% if (favorites.favorites.includes(item._id)) { %>
-                                    <a href="<%= url %>/news/favorite/<%= item._id %>" class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm"><i
-                                        class="fas fa-star text-white-50 p-2"></i></a>
+                                <% if (favorites.includes(item._id)) { %>
+                                    <a href="<%= url %>/news/favorite/delete/<%= item._id %>" class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm m-1">
+                                        <i class="fas fa-star text-white-50 p-1"></i>
+                                    </a>
                                 <% } else{ %>
-                                    <a href="<%= url %>/news/favorite/<%= item._id %>" class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm"><i
-                                        class="far fa-star text-white-50 p-2"></i></a>
-                                <% } %>                                
-
-                                <a href="<%= url %>/news/create/<%= item._id %>" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm"><i
-                                    class="fas fa-edit fa-sm text-white-50 p-2"></i></a>
+                                    <a href="<%= url %>/news/favorite/<%= item._id %>" class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm m-1">
+                                        <i class="far fa-star text-white-50 p-1"></i>
+                                    </a>
+                                <% } %>    
                                 
-                                <a href="<%= url %>/news/delete/<%= item._id %>" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm"><i
-                                    class="far fa-trash-alt fa-sm text-white-50 p-2"></i></a>
+                                <% if (user.roles.includes("Editor")) { %>
 
+                                    <a href="<%= url %>/news/edit/<%= item._id %>" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm m-1">
+                                        <i class="fas fa-edit fa-sm text-white-50 p-1"></i>
+                                    </a>
+                                    
+                                    <a href="<%= url %>/news/delete/<%= item._id %>" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm m-1">
+                                        <i class="far fa-trash-alt fa-sm text-white-50 p-1"></i>
+                                    </a>
+                                <% } %>  
                             </td>
                         </tr>
                     <% }); %>

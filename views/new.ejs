@@ -1,36 +1,30 @@
 <%- include('./template/header'); %>
-<!-- Page Heading -->
-<div class="d-sm-flex align-items-center justify-content-between mb-4">
-  <h1 class="h3 mb-0 text-gray-800">Create News</h1>
-
-</div>
 
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
 
     <div class="card-body">
       <div class="text-center">
-          <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
-      </div>
-      <form class="user" action="<%= url %>/news" method="POST">
-
-          <div class="form-group">
-              <input type="text" value="test" class="form-control form-control-user" id="title" placeholder="Title" required name="title">
-          </div>
-
-          <div class="form-group">
-            <input type="text" value="test" class="form-control form-control-user" id="urlimg" placeholder="Url Image" required name="urlimg">
-          </div>
-
-          <div class="form-group">
-              <textarea type="text"  rows="4" class="form-control" id="body" placeholder="Body" required name="body">
-                asdf
-              </textarea>
-          </div>
+          <h1 class="h4 text-gray-900 mb-4"><%= news.title %></h1>
           
-          <button class="btn btn-primary btn-user btn-block">Create New</button>
+      </div>
 
-      </form>
+      <div class="row">
+
+        <div class="col-lg-6">
+          <img width="100%" src="<%= news.urlimg %>" alt="Image">
+        </div>
+
+        <div class="col-lg-6">
+            <p><%= news.body %></p>
+            <p class="h5 mt-4">Created By: <%= news.user.name %></p>
+        </div>
+
+      </div>
+      <br/>
+      <div class="text-center">
+          <a class="small" href="<%= url %>/news">Go Back</a>
+      </div>
     </div>
 </div>
 

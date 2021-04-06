@@ -1,0 +1,33 @@
+<%- include('./template/header'); %>
+
+<!-- DataTales Example -->
+<div class="card shadow mb-4">
+
+    <div class="card-body">
+      <div class="text-center">
+          <h1 class="h4 text-gray-900 mb-4">Update New!</h1>
+      </div>
+      <form class="user" action="<%= url %>/news/edit/<%= news._id %>" method="POST">
+
+          <div class="form-group">
+              <input type="text" value="<%= news.title %>" class="form-control form-control-user" id="title" placeholder="Title" required name="title">
+          </div>
+
+          <div class="form-group">
+            <input type="text" value="<%= news.urlimg %>" class="form-control form-control-user" id="urlimg" placeholder="Url Image" required name="urlimg">
+          </div>
+
+          <div class="form-group">
+              <textarea type="text" rows="4" class="form-control" id="body" placeholder="Body" required name="body"><%= news.body %></textarea>
+          </div>
+          <button class="btn btn-primary btn-user btn-block">Update New</button>
+          <br/>
+          <div class="text-center">
+              <a class="small" href="<%= url %>/news">Go Back</a>
+          </div>
+      </form>
+    </div>
+</div>
+
+
+<%- include('./template/footer'); %>

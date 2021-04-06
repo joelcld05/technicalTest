@@ -1,9 +1,9 @@
-const   {isLoggedIn}  = require('../middleware/authMiddleware');
+const   {isLoggedIn,checkPermisions}  = require('../middleware/authMiddleware');
 const   User          =  require("../models/user"),
-        News          =  require("../models/news"),
-        passport      =  require("passport");
+        News          =  require("../models/news");
 
 module.exports = {
+
     getNews:[
         isLoggedIn,
         async (req,res) =>{
@@ -13,35 +13,55 @@ module.exports = {
                 "urlimg": 1,
                 "createdAt": 1,
                 "name":1,
-                }).populate("user", "name").exec();
+                }).sort([['createdAt', -1]]).populate("user", "name").exec();
             let favotites = await User.findById(req.user._id,"favorites");
-            console.log(favotites);
-            return res.render("home",{news:news, favorites:favotites});
+            return res.render("home",{news:news, favorites:favotites.favorites});
         }
     ],
 
     getFavoriteNews:[
         isLoggedIn,
-        (req,res) =>{
-            return res.render("favorites");
+        async (req,res) =>{
+            let news = await User.findById(req.user._id,"favorites").sort([['createdAt', -1]]).populate("favorites");
+            return res.render("favorites",{news:news.favorites});
         }
     ],
     
     getOneNew:[
         isLoggedIn,
-        (req,res)=>{
-            return res.render("register");
+        async (req,res)=>{
+            let news = await News.findById(req.params.id,{
+                "_id": 1,
+                "title": 1,
+                "urlimg": 1,
+                "body":1
+            }).populate("user", "name").exec();;
+            console.log(news);
+            return res.render("new",{news:news});
         }
     ],
 
     getCreateNew:[
         isLoggedIn,
+        checkPermisions,
         (req,res)=>{
             return res.render("createNew");
         }
     ],
 
-
+    getUpdateNew:[
+        isLoggedIn,
+        checkPermisions,
+        async (req,res)=>{
+            let news = await News.findById(req.params.id,{
+                "_id": 1,
+                "title": 1,
+                "urlimg": 1,
+                "body":1
+            });
+            return res.render("updateNew",{news:news});
+        }
+    ],
 
     postNewFavorite:[
         isLoggedIn,
@@ -50,14 +70,26 @@ module.exports = {
                 { _id: req.user._id }, 
                 { $push: { favorites: req.params.id } },
                 (err, user)=>{
-                    return res.redirect("/news");
+                    return res.redirect('back');
                 });
         }
     ],
 
+    deleteNewFavorite:[
+        isLoggedIn,
+        (req,res)=>{
+            User.findOneAndUpdate(
+                { _id: req.user._id }, 
+                { $pull: { favorites: req.params.id } },
+                (err, user)=>{
+                    return res.redirect('back');
+                });
+        }
+    ],
 
     deleteNew:[
         isLoggedIn,
+        checkPermisions,
         async (req,res)=>{
             await News.deleteOne({_id:req.params.id});
             return res.redirect("/news");      
@@ -66,6 +98,7 @@ module.exports = {
 
     postNew:[
         isLoggedIn,
+        checkPermisions,
         (req,res)=>{
             News.create({ 
                 title: req.body.title,
@@ -86,23 +119,22 @@ module.exports = {
 
     putNew:[
         isLoggedIn,
+        checkPermisions,
         (req,res)=>{
-            User.register(
-                new User({ 
-                    title: req.body.title,
-                    body: req.body.body,
-                    urlimg: req.body.urlimg,
-                    user: req.user
-                }),req.body.password,
-                function(err,user){
-                if(err){
-                    return res.render("register");
+            News.findOneAndUpdate({_id:req.params.id}, { 
+                title: req.body.title,
+                body: req.body.body,
+                urlimg: req.body.urlimg,
+                user: req.user
+            }, {upsert: true}, function(err, doc) {
+                if (err){
+                    console.log(err);
+                    return res.redirect("back");
                 }else{
-                    passport.authenticate("local")(req,res,function(){
-                        return res.redirect("/");
-                    });
-                }
+                    return res.redirect("/news");
+                };
             });
+
         }
     ]
 }
