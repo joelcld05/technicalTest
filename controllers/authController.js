@@ -1,18 +1,23 @@
 const passport                              =   require("passport");
 const {isLoggedIn,goHomeIfLoggedIn}         =   require('../middleware/authMiddleware');
 
-exports.Home=[
+
+module.exports = {
+Home:[
     isLoggedIn,
     (req,res) =>{
         return res.redirect("/news");
     }
-]
+],
 
-exports.getLogin=[goHomeIfLoggedIn,(req,res)=>{
-    return res.render("login");
-}]
+getLogin:[
+    goHomeIfLoggedIn,
+    (req,res)=>{
+        return res.render("login");
+    }
+],
 
-exports.postLogin=[
+postLogin:[
         passport.authenticate("local",{
         successRedirect:"/",
         failureRedirect:"/login"
@@ -20,9 +25,10 @@ exports.postLogin=[
     (req, res)=>{
         
     }
-]
+],
 
-exports.logout=(req,res)=>{
+logout:(req,res)=>{
     req.logout();
     return res.redirect("/");
+}
 }

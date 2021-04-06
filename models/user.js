@@ -4,9 +4,13 @@ const passportLocalMongoose = require("passport-local-mongoose");
 
 const UserSchema = new mongoose.Schema(
     {
-        username:{ type: String,  required:true, unique: true },
-        password:{ type: String,  required:true },
-        roles:[{ type: String,  enum : ['Reader','Editor'], default: ['Reader'] }]
+        name:{ type: String,  required:true},
+        username:{ type: String,  required:true, unique: true, sparse: true },
+        roles:[{ type: String,  enum : ['Reader','Editor'], default: ['Reader'] }],
+        favorites :[{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'News'
+        }]
     },
     {
         timestamps: true
@@ -14,5 +18,4 @@ const UserSchema = new mongoose.Schema(
 );
 
 UserSchema.plugin(passportLocalMongoose);
-
 module.exports = mongoose.model("User",UserSchema);

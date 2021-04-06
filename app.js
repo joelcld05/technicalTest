@@ -5,7 +5,9 @@ const   express               =  require('express'),
         bodyParser            =  require("body-parser"),
         LocalStrategy         =  require("passport-local"),
         User                  =  require("./models/user")
-        morgan                =  require('morgan');
+        morgan                =  require('morgan'),
+        moment                =  require('moment'),
+        path                  =  require('path');
 
 const   auth = require("./routes/authRoutes")
         user = require("./routes/userRoutes");
@@ -31,13 +33,22 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 passport.use(new LocalStrategy(User.authenticate()));
 
+app.set('views', path.join(__dirname, 'views'));
 app.set("view engine","ejs");
+
 app.use(bodyParser.urlencoded({ extended:true }))
 app.use(morgan('dev'));
 app.use(passport.initialize());
 app.use(passport.session());
-app.use('/static',express.static('public'))
+app.use('/static',express.static('public'));
 
+//define variables to be used within ejs
+app.use(function(req, res, next) {
+    res.locals.user  = req.user;
+    res.locals.query = req.query;
+    res.locals.url   = req.protocol + "://" + req.get('host');
+    next();
+ });
 
 //Regestering app routes 
 app.use('/', auth);

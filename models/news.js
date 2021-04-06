@@ -5,8 +5,12 @@ const passportLocalMongoose = require("passport-local-mongoose");
 const UserSchema = new mongoose.Schema(
     {
         title:{ type: String,  required:true },
-        content:{ type: String,  required:true },
-        imageUrl:{ type: String,  required:true }
+        body:{ type: String,  required:true },
+        urlimg:{ type: String,  required:true },
+        user:{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'User'
+        }
     },
     {
         timestamps: true
@@ -15,4 +19,4 @@ const UserSchema = new mongoose.Schema(
 
 UserSchema.plugin(passportLocalMongoose);
 
-module.exports = mongoose.model("User",UserSchema);
+module.exports = mongoose.model("News",UserSchema);
