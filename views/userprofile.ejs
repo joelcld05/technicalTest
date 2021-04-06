@@ -1,10 +1,51 @@
-<h1>
-    User Profile
-</h1>
-<p>
-    After Login the user will reach here.
-</p>
-<ul>
-    <li><a href="/">Home</a></li>
-    <li><a href="/logout">Logout</a></li>
-</ul>
+<%- include('./template/header'); %>
+
+<div class="card o-hidden border-0 shadow-lg my-5">
+    <div class="card-body p-0">
+        <!-- Nested Row within Card Body -->
+        <div class="row">
+            <div class="col-lg-5 d-none d-lg-block bg-register-image"></div>
+            <div class="col-lg-7">
+                <div class="p-5">
+                    <div class="text-center">
+                        <h1 class="h4 text-gray-900 mb-4">My Profile!</h1>
+                    </div>
+                    <form class="user" action="/register" method="POST">
+
+                        <div class="form-group">
+                            <input type="text" class="form-control form-control-user" id="name"
+                                placeholder="Name" required name="name">
+                        </div>
+
+                        <div class="form-group">
+                            <input type="text" class="form-control form-control-user" id="username"
+                                placeholder="Username" required name="username">
+                        </div>
+
+                        <div class="form-group">
+                            <input type="password" class="form-control form-control-user" id="password"
+                                placeholder="Password" required name="password">
+                        </div>
+                        <div class="form-group">
+                            <select name="rol" class="form-control" id="rol">
+                                <option value="Reader">Reader</option>
+                                <option value="Editor">Editor</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-primary btn-user btn-block">Register Account</button>
+                        </div>
+                        
+                    </form>
+                    <hr>
+
+                    <div class="text-center">
+                        <a class="small" href="/login">Already have an account? Login!</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('./template/footer'); %>

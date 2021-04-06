@@ -1,115 +1,104 @@
-const   {isLoggedIn,checkPermisions}  = require('../middleware/authMiddleware');
-const   User          =  require("../models/user"),
-        News          =  require("../models/news");
+const { isLoggedIn, checkPermisions } = require('../middleware/authMiddleware');
+const User = require("../models/user"),
+    News = require("../models/news");
 
 module.exports = {
 
-    getNews:[
+    getNews: [
         isLoggedIn,
-        async (req,res) =>{
-            let news = await News.find({}, {
-                "_id": 1,
-                "title": 1,
-                "urlimg": 1,
-                "createdAt": 1,
-                "name":1,
-                }).sort([['createdAt', -1]]).populate("user", "name").exec();
-            let favotites = await User.findById(req.user._id,"favorites");
-            return res.render("home",{news:news, favorites:favotites.favorites});
+        async (req, res) => {
+            let news = await News.find({}, {"_id": 1,"title": 1,"urlimg": 1,"createdAt": 1})
+                                .sort([['createdAt', -1]])
+                                .populate("user", "name")
+                                .exec();
+            let favotites = await User.findById(req.user._id, "favorites");
+            return res.render("home", { news: news, favorites: favotites.favorites });
         }
     ],
 
-    getFavoriteNews:[
+    getFavoriteNews: [
         isLoggedIn,
-        async (req,res) =>{
-            let news = await User.findById(req.user._id,"favorites").sort([['createdAt', -1]]).populate("favorites");
-            return res.render("favorites",{news:news.favorites});
-        }
-    ],
-    
-    getOneNew:[
-        isLoggedIn,
-        async (req,res)=>{
-            let news = await News.findById(req.params.id,{
-                "_id": 1,
-                "title": 1,
-                "urlimg": 1,
-                "body":1
-            }).populate("user", "name").exec();;
-            console.log(news);
-            return res.render("new",{news:news});
+        async (req, res) => {
+            let news = await User.findById(req.user._id, "favorites")
+                                .sort([['createdAt', -1]])
+                                .populate("favorites");
+            return res.render("favorites", { news: news.favorites });
         }
     ],
 
-    getCreateNew:[
+    getOneNew: [
+        isLoggedIn,
+        async (req, res) => {
+            let news = await News.findById(req.params.id, {"_id": 1,"title": 1,"urlimg": 1,"body": 1})
+                                .populate("user", "name")
+                                .exec();
+            return res.render("new", { news: news });
+        }
+    ],
+
+    getCreateNew: [
         isLoggedIn,
         checkPermisions,
-        (req,res)=>{
+        (req, res) => {
             return res.render("createNew");
         }
     ],
 
-    getUpdateNew:[
+    getUpdateNew: [
         isLoggedIn,
         checkPermisions,
-        async (req,res)=>{
-            let news = await News.findById(req.params.id,{
-                "_id": 1,
-                "title": 1,
-                "urlimg": 1,
-                "body":1
-            });
-            return res.render("updateNew",{news:news});
+        async (req, res) => {
+            let news = await News.findById(req.params.id,  {"_id": 1,"title": 1,"urlimg": 1,"body": 1});
+            return res.render("updateNew", { news: news });
         }
     ],
 
-    postNewFavorite:[
+    postNewFavorite: [
         isLoggedIn,
-        (req,res)=>{
+        (req, res) => {
             User.findOneAndUpdate(
-                { _id: req.user._id }, 
+                { _id: req.user._id },
                 { $push: { favorites: req.params.id } },
-                (err, user)=>{
+                (err, user) => {
                     return res.redirect('back');
                 });
         }
     ],
 
-    deleteNewFavorite:[
+    deleteNewFavorite: [
         isLoggedIn,
-        (req,res)=>{
+        (req, res) => {
             User.findOneAndUpdate(
-                { _id: req.user._id }, 
+                { _id: req.user._id },
                 { $pull: { favorites: req.params.id } },
-                (err, user)=>{
+                (err, user) => {
                     return res.redirect('back');
                 });
         }
     ],
 
-    deleteNew:[
+    deleteNew: [
         isLoggedIn,
         checkPermisions,
-        async (req,res)=>{
-            await News.deleteOne({_id:req.params.id});
-            return res.redirect("/news");      
+        async (req, res) => {
+            await News.deleteOne({ _id: req.params.id });
+            return res.redirect("/news");
         }
     ],
 
-    postNew:[
+    postNew: [
         isLoggedIn,
         checkPermisions,
-        (req,res)=>{
-            News.create({ 
+        (req, res) => {
+            News.create({
                 title: req.body.title,
                 body: req.body.body,
                 urlimg: req.body.urlimg,
                 user: req.user
-            },  (err, small) => {
-                if (err){
-                    console.log(err);
+            }, (err, small) => {
+                if (err) {
                     return res.redirect("/news/create");
-                }else{
+                } else {
                     return res.redirect("/news");
                 };
             });
@@ -117,20 +106,19 @@ module.exports = {
     ],
 
 
-    putNew:[
+    putNew: [
         isLoggedIn,
         checkPermisions,
-        (req,res)=>{
-            News.findOneAndUpdate({_id:req.params.id}, { 
+        (req, res) => {
+            News.findOneAndUpdate({ _id: req.params.id }, {
                 title: req.body.title,
                 body: req.body.body,
                 urlimg: req.body.urlimg,
                 user: req.user
-            }, {upsert: true}, function(err, doc) {
-                if (err){
-                    console.log(err);
+            }, { upsert: true }, (err, doc) => {
+                if (err) {
                     return res.redirect("back");
-                }else{
+                } else {
                     return res.redirect("/news");
                 };
             });

@@ -1,9 +1,9 @@
 const express = require('express')
 const router = express.Router();
 const { getNews, postNew, postNewFavorite, deleteNew,
-        getOneNew,putNew,getFavoriteNews,getCreateNew,
-        deleteNewFavorite,getUpdateNew
-    } = require('../controllers/newsController');
+    getOneNew, putNew, getFavoriteNews, getCreateNew,
+    deleteNewFavorite, getUpdateNew
+} = require('../controllers/newsController');
 
 router.route('/news').get(getNews).post(postNew);
 router.route('/news/create').get(getCreateNew);
