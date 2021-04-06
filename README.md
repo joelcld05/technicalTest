@@ -28,5 +28,8 @@ Prueba ténica, requerimientos.
 
 ## Template 
 
-[SB Admin 2](https://startbootstrap.com/theme/sb-admin-2)
+Template utilizado para el desarrollo del sistema: [SB Admin 2](https://startbootstrap.com/theme/sb-admin-2)
 
+## Observaciones 
+
+Para el tema de los roles y permisos pude haber realizado algo mucho más complejo, almacenando los roles y los permisos para cada rol en tablas correspondientes, sin embargo, debido al tiempo y los requerimientos, solamente valido si el usuario cuenta con el rol de Editor.

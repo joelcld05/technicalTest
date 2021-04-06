@@ -1,2 +1,3 @@
-DB_HOST_MONGO=
-APP_KEY=
+DB_HOST_MONGO=mongodb://localhost/technicalTest
+APP_KEY=MyAppKey
+APP_PORT=3000
